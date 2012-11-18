@@ -13,9 +13,9 @@ public class MermaidEntity implements Updatable, Drawable {
     public MermaidEntity(int offset, float xPosition) {
         mFrameIndex = offset;
         mSprites.add(ResourceManager.spriteFromFilename("assets/mermaid.png"));
-        mSprites.add(ResourceManager.spriteFromFilename("assets/mermaid-open.png"));
-        mSprites.add(ResourceManager.spriteFromFilename("assets/mermaid-flipped-open.png"));
+        mSprites.add(ResourceManager.spriteFromFilename("assets/mermaid-open.png"));        
         mSprites.add(ResourceManager.spriteFromFilename("assets/mermaid-flipped.png"));
+        mSprites.add(ResourceManager.spriteFromFilename("assets/mermaid-flipped-open.png"));
         
         for (Sprite s : mSprites) {
             s.setPosition(xPosition, 0);
