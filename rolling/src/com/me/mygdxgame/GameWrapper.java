@@ -40,14 +40,17 @@ public class GameWrapper implements ApplicationListener {
     private SpriteBatch mSpriteBatch;
     private ShapeRenderer mBackgroundRenderer;
 
+    private ElevatorGuyBackground mEgb;
     private Color[] mColors = new Color[4];
 
     private ShapeRenderer mStarRenderer;
     private ArrayList<Vector2> mStars;
     private List<Updatable> mUpdateables = new ArrayList<Updatable>();
+    private boolean mBegunEGB = false;
     private int mWidth = 800;
     private Random rng = new Random();
     private List<MermaidEntity> mMermaidEntities;
+    private SpriteBatch mBackgroundSpriteBatch;
     GangnamPlayer mGangnamPlayer;
 
     @Override
@@ -62,7 +65,9 @@ public class GameWrapper implements ApplicationListener {
         mDebugRenderer = new Box2DDebugRenderer();
         mDebugRenderer.setDrawBodies(true);
         mDebugRenderer.setDrawAABBs(true);
+        mBackgroundSpriteBatch = new SpriteBatch();
         mMermaidEntities = new ArrayList<MermaidEntity>();
+        mEgb = new ElevatorGuyBackground();
 
         PsyEntity pse = new PsyEntity(this);
         mPsyEntity = pse;
@@ -145,19 +150,39 @@ public class GameWrapper implements ApplicationListener {
 
     }
 
+    private int mUpdateIndex = 0;
+
     private void drawBackground() {
-        mBackgroundRenderer.setProjectionMatrix(getProjectionMatrix());
-        mBackgroundRenderer.begin(ShapeType.FilledRectangle);
-        mColors[0] = new Color(1, 1, 1, 1);
+        if (drawingElevatorGuy()) {
+            mBackgroundSpriteBatch.begin();
+            mEgb.draw(mBackgroundSpriteBatch);
+            mBackgroundSpriteBatch.end();
+            mUpdateIndex++;
+            if (mUpdateIndex % 2 == 0) {
+                mEgb.update();
+                if (mEgb.mOver) {
+                    mBegunEGB = false;
+                    mEgb.reset();
+                }
+            }
+        } else {
+            mBackgroundRenderer.setProjectionMatrix(getProjectionMatrix());
+            mBackgroundRenderer.begin(ShapeType.FilledRectangle);
+            mColors[0] = new Color(1, 1, 1, 1);
 
-        mColors[0].r = mSegmentLoader.getPitch(9) * 0.3f;
-        mColors[0].g = mSegmentLoader.getPitch(4) * 0.3f;
-        mColors[0].b = mSegmentLoader.getPitch(2) * 0.3f;
+            mColors[0].r = mSegmentLoader.getPitch(9) * 0.3f;
+            mColors[0].g = mSegmentLoader.getPitch(4) * 0.3f;
+            mColors[0].b = mSegmentLoader.getPitch(2) * 0.3f;
 
-        mBackgroundRenderer.setColor(mColors[0]);
-        mBackgroundRenderer.filledRect(0, 0, 800, 600);
+            mBackgroundRenderer.setColor(mColors[0]);
+            mBackgroundRenderer.filledRect(0, 0, 800, 600);
 
-        mBackgroundRenderer.end();
+            mBackgroundRenderer.end();
+        }
+    }
+
+    private boolean drawingElevatorGuy() {
+        return mBegunEGB && !mEgb.mOver;
     }
 
     private void drawGameOverText() {
@@ -272,6 +297,9 @@ public class GameWrapper implements ApplicationListener {
             mUpdateables.add(o);
             mDrawables.add(o);
             explode();
+            if (rng.nextFloat() < 0.05) {
+                mBegunEGB = true;
+            }
         }
     }
 
