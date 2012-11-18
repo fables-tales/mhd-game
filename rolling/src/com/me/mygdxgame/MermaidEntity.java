@@ -19,7 +19,7 @@ public class MermaidEntity implements Updatable, Drawable {
         
         for (Sprite s : mSprites) {
             s.setPosition(xPosition, 0);
-            s.setScale(0.5f);
+            s.setScale(0.7f);
         }
     }
     
