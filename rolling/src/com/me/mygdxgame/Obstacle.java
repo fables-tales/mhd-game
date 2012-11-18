@@ -35,7 +35,7 @@ public class Obstacle implements Drawable, Updatable {
         float dy = mGameWrapper.mPsyEntity.getYPosition() -  (mSprite.getY()+mSprite.getHeight()/2);
         System.out.println(Math.sqrt(dx * dx + dy * dy) - mGameWrapper.mPsyEntity.getSize());
         if (Math.sqrt(dx * dx + dy * dy) < mGameWrapper.mPsyEntity.getSize()) {
-            //mGameWrapper.gameOver();
+            mGameWrapper.gameOver();
         }
 
         mSprite.setPosition(mSprite.getX() - 10
